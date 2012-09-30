@@ -8,7 +8,7 @@ class ContentUrls
   def self.each(content, type, base_url)
     urls = []
     if (parser = get_parser(type))
-      parser.new(content).each_url do |u|
+      parser.new(content).urls.each do |u|
         abs = to_absolute(URI(u), base_url) rescue next
         urls << abs
       end

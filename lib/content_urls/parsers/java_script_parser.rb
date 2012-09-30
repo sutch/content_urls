@@ -31,10 +31,10 @@ class ContentUrls
     #
     # @example Rewrite URLs in JavaScript code
     #   javascript = 'var link="http://example.com/"'
-    #   javascript = ContentUrls::JavaScriptParser.rewrite_urls(javascript).each {|url| url.upcase}
+    #   javascript = ContentUrls::JavaScriptParser.rewrite_each_url(javascript) {|url| url.upcase}
     #   # => "Rewritten: var link="HTTP://EXAMPLE.COM/""
     #
-    def self.rewrite_each(content, &block)
+    def self.rewrite_each_url(content, &block)
       done = false
       remaining = content
       rewritten = ''
