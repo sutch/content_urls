@@ -15,3 +15,15 @@ describe ContentUrls.to_absolute('index.html', 'http://www.sample.com/') do
     ContentUrls.to_absolute('../four/index.html', 'http://www.sample.com/one/two/three/').should eq 'http://www.sample.com/one/two/four/index.html'
   end
 end
+
+describe ContentUrls.get_parser('bogus/bogus') do
+  it "returns nil when content type is unknown" do
+    ContentUrls.get_parser('bogus/bogus').should eq nil
+  end
+end
+
+describe ContentUrls.register_parser('some_parser_class', %r{^(content/test)\b}) do
+  it "returns the class for the content type" do
+    ContentUrls.get_parser('content/test').should eq 'some_parser_class'
+  end
+end

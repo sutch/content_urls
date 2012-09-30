@@ -3,6 +3,8 @@ require 'uri'
 
 class ContentUrls
 
+  @@type_parser = Hash.new { |hash, key| hash[key] = [] }  # mapping of type regex to parser class
+
   def self.each(content, type, base_url)
     urls = []
     if (parser = get_parser(type))
@@ -23,6 +25,23 @@ class ContentUrls
         (replacement.nil? ? u : replacement)
       end
     end
+  end
+
+  # Register a parser implementation class for one or more content type regular expressions
+  def self.register_parser(parser_class, *type_regexes)
+    type_regexes.each do |regex|
+      @@type_parser[regex].push parser_class
+    end
+  end
+
+  # Return parser for a file type or nil if content type not recognized
+  def self.get_parser(type)
+    @@type_parser.each_pair do |regex, parser|
+      if type =~ regex
+        return parser.first
+      end
+    end
+    return nil
   end
 
   # Convert relative URL to an absolute URL based on the content's location (base_url)
