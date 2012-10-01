@@ -1,6 +1,7 @@
 require 'uri'
 
 class ContentUrls
+
   # +JavaScriptParser+ finds and rewrites URLs in JavaScript content.
   #
   # === Implementation note:
@@ -32,13 +33,14 @@ class ContentUrls
     # @example Rewrite URLs in JavaScript code
     #   javascript = 'var link="http://example.com/"'
     #   javascript = ContentUrls::JavaScriptParser.rewrite_each_url(javascript) {|url| url.upcase}
+    #   puts "Rewritten: #{javascript}"
     #   # => "Rewritten: var link="HTTP://EXAMPLE.COM/""
     #
     def self.rewrite_each_url(content, &block)
       done = false
       remaining = content
       rewritten = ''
-      while ! done
+      while ! remaining.empty?
         if match = URI.regexp.match(remaining)
           url = match.to_s
           rewritten += match.pre_match
@@ -53,7 +55,6 @@ class ContentUrls
         else
           rewritten += remaining
           remaining = ''
-          done = true
         end
       end
       return rewritten
