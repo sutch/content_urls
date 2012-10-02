@@ -5,26 +5,22 @@ class ContentUrls
 
   @@type_parser = Hash.new { |hash, key| hash[key] = [] }  # mapping of type regex to parser class
 
-  def self.each(content, type, base_url)
+  def self.urls(content, type)
     urls = []
     if (parser = get_parser(type))
-      parser.new(content).urls.each do |u|
-        abs = to_absolute(URI(u), base_url) rescue next
-        urls << abs
-      end
-      urls.uniq!
+      parser.new(content).urls.each { |url| urls << url }
     end
     urls
   end
 
-  def self.rewrite_each(content, type, base_url, &block)
+  def self.rewrite_each_url(content, type, &block)
     if (parser = get_parser(type))
-      parser.rewrite_each_url(body) do |u|
-        abs = to_absolute(URI(u), base_url) rescue next
-        replacement = yield abs
-        (replacement.nil? ? u : replacement)
+      parser.rewrite_each_url(content) do |url|
+        replacement = yield url
+        (replacement.nil? ? url : replacement)
       end
     end
+    content
   end
 
   # Register a parser implementation class for one or more content type regular expressions
@@ -55,9 +51,10 @@ class ContentUrls
   end
 
   # Parser implementations
+  # - each implementation's urls method should return unique URLs
 
-#  require 'content_urls/parsers/html_parser'
-#  register_parser ContentUrls::HtmlParser, %r{^(text/html)\b}, %r{^(application/xhtml+xml)\b}
+  require 'content_urls/parsers/html_parser'
+  register_parser ContentUrls::HtmlParser, %r{^(text/html)\b}, %r{^(application/xhtml+xml)\b}
 
   require 'content_urls/parsers/css_parser'
   register_parser ContentUrls::CssParser, %r{^(text/css)\b}
