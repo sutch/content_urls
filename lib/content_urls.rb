@@ -1,10 +1,31 @@
 require 'content_urls/version'
 require 'uri'
 
+# +ContentUrls+ parses various file types (HTML, CSS, JavaScript, ...) for URLs and provides methods for iterating through URLs and changing URLs.
+#
 class ContentUrls
 
-  @@type_parser = Hash.new { |hash, key| hash[key] = [] }  # mapping of type regex to parser class
-
+  # Returns the URLs found in the content.
+  #
+  # @param [String] content the content.
+  # @param [String] type the media type of the content.
+  # @return [Array] the unique URLs found in the content.
+  #
+  # @example Parse HTML code for URLs
+  #   content = '<html><a href="index.html">Home</a></html>'
+  #   ContentUrls.urls(content, 'text/html').each do |url|
+  #     puts "Found URL: #{url}"
+  #   end
+  #   # => "Found URL: index.html"
+  #
+  # @example Parse content obtained from a robot
+  #   response = Net::HTTP.get_response(URI('http://example.com/sample-1'))
+  #   puts "URLs found at http://example.com/sample-1:"
+  #   ContentUrls.urls(response.body, response.content_type).each do |url|
+  #     puts "  #{url}"
+  #   end
+  #   # => [a list of URLs found in the content located at http://example.com/sample-1]
+  #
   def self.urls(content, type)
     urls = []
     if (parser = get_parser(type))
@@ -13,6 +34,18 @@ class ContentUrls
     urls
   end
 
+  # Rewrites each URL in the content by calling the supplied block with each URL.
+  #
+  # @param [String] content the HTML content.
+  # @param [String] type the media type of the content.
+  # @returns [string] content the rewritten content.
+  #
+  # @example Rewrite URLs in HTML code
+  #   content = '<html><a href="index.htm">Home</a></html>'
+  #   content = ContentUrls.rewrite_each_url(content, 'text/html') {|url| 'gone.html'}
+  #   puts "Rewritten: #{content}"
+  #   # => "Rewritten: <html><a href="gone.html">Home</a></html>"
+  #
   def self.rewrite_each_url(content, type, &block)
     if (parser = get_parser(type))
       parser.rewrite_each_url(content) do |url|
@@ -22,6 +55,25 @@ class ContentUrls
     end
     content
   end
+
+  # Convert a relative URL to an absolute URL using base_url (for example, the content's original location or an HTML document's href attribute of the base tag).
+  #
+  # @example Obtain absolute URL of "../index.html" of page obtained from "http://example.com/one/two/sample.html"
+  #   puts ContentUrls.to_absolute("../index.html", "http://example.com/folder/sample.html")
+  #   # => "http://example.com/index.html"
+  #
+  def self.to_absolute(url, base_url)
+    return nil if url.nil?
+
+    url = URI.encode(URI.decode(url.to_s.gsub(/#[a-zA-Z0-9_-]*$/,'')))  # remove anchor
+    absolute = URI(base_url).merge(url)
+    absolute.path = '/' if absolute.path.empty?
+    absolute.to_s
+  end
+
+  protected
+
+  @@type_parser = Hash.new { |hash, key| hash[key] = [] }  # mapping of type regex to parser class
 
   # Register a parser implementation class for one or more content type regular expressions
   def self.register_parser(parser_class, *type_regexes)
@@ -38,16 +90,6 @@ class ContentUrls
       end
     end
     return nil
-  end
-
-  # Convert relative URL to an absolute URL based on the content's location (base_url)
-  def self.to_absolute(url, base_url)
-    return nil if url.nil?
-
-    url = URI.encode(URI.decode(url.to_s.gsub(/#[a-zA-Z0-9_-]*$/,'')))  # remove anchor
-    absolute = URI(base_url).merge(url)
-    absolute.path = '/' if absolute.path.empty?
-    absolute.to_s
   end
 
   # Parser implementations
