@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
+    "content_urls.gemspec",
     "lib/content_urls.rb",
     "lib/content_urls/parsers/css_parser.rb",
     "lib/content_urls/parsers/html_parser.rb",
