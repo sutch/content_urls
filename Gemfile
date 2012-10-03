@@ -1,7 +1,5 @@
 source "http://rubygems.org"
 
-git "git://github.com/sutch/content_urls.git", :tag => "v0.1.0"
-
 gem "nokogiri"
 
 group :development do
