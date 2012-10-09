@@ -110,6 +110,10 @@ class ContentUrls
         xpath: "//frame[@src]",
         attribute: 'src'
       },
+      iframe_src: {
+        xpath: "//iframe[@src]",
+        attribute: 'src'
+      },
       img_src: {
         xpath: "//img[@src]",
         attribute: 'src'

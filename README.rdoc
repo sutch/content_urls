@@ -14,6 +14,7 @@ ContentUrls was developed to address two use cases:
     * <body> tag background attribute
     * <embed> tag src attribute
     * <frame> tag src attribute
+    * <iframe> tag src attribute
     * <img> tag src attribute
     * <link> tag href attribute
     * <meta> tag content attribute containing URL
