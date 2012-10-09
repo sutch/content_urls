@@ -13,6 +13,7 @@ ContentUrls was developed to address two use cases:
     * <area> tag href attribute
     * <body> tag background attribute
     * <embed> tag src attribute
+    * <frame> tag src attribute
     * <img> tag src attribute
     * <link> tag href attribute
     * <meta> tag content attribute containing URL
@@ -48,7 +49,7 @@ To test and develop this gem, additional requirements are:
 * rcov
 * rdoc
 * rspec
-* yard"
+* yard
 
 == Contributing to content_urls
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.

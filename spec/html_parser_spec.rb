@@ -299,6 +299,26 @@ SAMPLE_12
 end
 
 describe ContentUrls::HtmlParser do
+  it "should parse HTML Sample 13 and return 'frame src' URL" do
+
+html_sample_13 =<<SAMPLE_13
+<html>
+<head>
+  <title>HTML Sample 8</title>
+</head>
+<body>
+  <h1>HTML Sample 8</h1>
+  <frame src='/info.html'>
+</body>
+</html>
+SAMPLE_13
+
+    urls = ContentUrls::HtmlParser.urls(html_sample_13)
+    urls.first.should eq '/info.html'
+  end
+end
+
+describe ContentUrls::HtmlParser do
   it "should execute the sample code for rewrite_each_url method" do
     #output = ''
     html = '<html><a href="index.htm">Click me</a></html>'
