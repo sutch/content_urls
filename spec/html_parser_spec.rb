@@ -307,7 +307,7 @@ html_sample_13 =<<SAMPLE_13
   <title>HTML Sample 8</title>
 </head>
 <body>
-  <h1>HTML Sample 8</h1>
+  <h1>HTML Sample 13</h1>
   <frame src='/info.html'>
 </body>
 </html>
@@ -315,6 +315,26 @@ SAMPLE_13
 
     urls = ContentUrls::HtmlParser.urls(html_sample_13)
     urls.first.should eq '/info.html'
+  end
+end
+
+describe ContentUrls::HtmlParser do
+  it "should parse the HTML and return the 'base' URL" do
+
+  html_base_sample =<<BASE_SAMPLE
+<html>
+<head>
+  <base href='/en/'
+  <title>HTML base Sample</title>
+</head>
+<body>
+  <h1>HTML base Sample</h1>
+</body>
+</html>
+BASE_SAMPLE
+
+    url = ContentUrls::HtmlParser.base(html_base_sample)
+    url.should eq '/en/'
   end
 end
 

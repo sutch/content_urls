@@ -1,4 +1,4 @@
-= content_urls
+= ContentUrls
 
 Find and rewrite URLs in different types of content.
 
@@ -51,6 +51,14 @@ To test and develop this gem, additional requirements are:
 * rdoc
 * rspec
 * yard
+
+== Goals for ContentUrls
+* Include support for:
+  * Acrobat (.pdf)
+  * Flash (.swf)
+  * Microsoft Office (.doc, .xls, .ppt)
+  * text (regular expression for URLs)
+* Capture links retrieved from a headless web browser which executes the code (JavaScript, etc.)
 
 == Contributing to content_urls
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.

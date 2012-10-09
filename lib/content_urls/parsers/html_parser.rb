@@ -30,6 +30,20 @@ class ContentUrls
       urls
     end
 
+    # Returns the base URL/target for all relative URLs in the HTML content.
+    #
+    # @param [String] content the HTML content.
+    # @return [String] the URL/target found in the content.
+    #
+    def self.base(content)
+      doc = Nokogiri::HTML(content) if content rescue nil
+      return nil if !doc
+
+      base = doc.search('//head/base/@href').to_s.strip
+      base = nil if base && base.empty?
+      base
+    end
+
     # Rewrites each URL in the HTML content by calling the supplied block with each URL.
     #
     # @param [String] content the HTML content.
