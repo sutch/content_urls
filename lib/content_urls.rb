@@ -29,7 +29,7 @@ class ContentUrls
   def self.urls(content, type)
     urls = []
     if (parser = get_parser(type))
-      parser.new(content).urls.each { |url| urls << url }
+      parser.urls(content).each { |url| urls << url }
     end
     urls
   end
