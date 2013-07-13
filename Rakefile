@@ -12,16 +12,17 @@ end
 require 'rake'
 
 require 'jeweler'
+require './lib/content_urls/version.rb'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "content_urls"
+  gem.version = ContentUrls::Version::STRING
   gem.homepage = "http://github.com/sutch/content_urls"
   gem.license = "MIT"
   gem.summary = %Q{Find and rewrite URLs in different types of content.}
   gem.description = %Q{Parses various file types (HTML, CSS, JavaScript, ...) for URLs and provides methods for iterating through URLs and changing URLs.}
   gem.email = "dennis@sutch.com"
   gem.authors = ["Dennis Sutch"]
-  # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
 
