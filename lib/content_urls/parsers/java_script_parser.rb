@@ -46,12 +46,11 @@ class ContentUrls
           rewritten += match.pre_match
           replacement = url.nil? ? nil : (yield url)
           if replacement.nil? or replacement == url  # no change in URL
-            rewritten += url[0]
-            remaining = url[1..-1] + match.post_match
+            rewritten += url
           else
             rewritten += replacement
-            remaining = match.post_match
           end
+          remaining = match.post_match
         else
           rewritten += remaining
           remaining = ''

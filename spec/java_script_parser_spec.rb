@@ -7,8 +7,9 @@ describe ContentUrls::JavaScriptParser do
 end
 
 describe ContentUrls::JavaScriptParser do
-  it "should return the URLs in the content" do
+  it "should return only the URLs in the content" do
     ContentUrls::JavaScriptParser.urls('var link="http://www.sample.com/index.html"').first.should eq 'http://www.sample.com/index.html'
+    ContentUrls::JavaScriptParser.urls('var link="http://www.sample.com/index.html"').count.should eq 1
   end
 end
 

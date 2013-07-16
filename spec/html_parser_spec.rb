@@ -10,13 +10,14 @@ describe ContentUrls::HtmlParser do
 end
 
 describe ContentUrls::HtmlParser do
-  it "should return the URLs in the content" do
+  it "should return the URL in the content" do
     ContentUrls::HtmlParser.urls("<a href='index.html").first.should eq 'index.html'
+    ContentUrls::HtmlParser.urls("<a href='index.html").count.should eq 1
   end
 end
 
 describe ContentUrls::HtmlParser do
-  it "should parse HTML Sample 1 and return all a links" do
+  it "should parse HTML Sample 1 and return all a links and no other links" do
 
 html_sample_1 =<<SAMPLE_1
 <html>
@@ -36,6 +37,7 @@ SAMPLE_1
     urls.include?('a-href-link-1.html').should eq true
     urls.include?('http://www.example.com/1/2/3/a-href-link-2.html').should eq true
     urls.include?('/folder/a-href-link-3.html?a=1').should eq true
+    urls.count.should eq 3
   end
 end
 
@@ -69,7 +71,7 @@ SAMPLE_1
 end
 
 describe ContentUrls::HtmlParser do
-  it "should parse HTML Sample 2 and return all 'area href' URLs" do
+  it "should parse HTML Sample 2 and return all 'area href' URLs and no other URLs" do
 
 html_sample_2 =<<SAMPLE_2
 <html>
@@ -78,7 +80,9 @@ html_sample_2 =<<SAMPLE_2
 </head>
 <body>
   <h1>HTML Sample 2</h1>
-  <img src="sample.gif" width="200" height="200" alt="Click somewhere" usemap="#sample-map">
+  <!-- commented out in order to not affect URL count
+    <img src="sample.gif" width="200" height="200" alt="Click somewhere" usemap="#sample-map">
+  -->
   <map name="sample-map">
     <area shape="rect" coords="0,0,100,100" href="area-href-link-1.html" alt="link 1">
     <area shape="circle" coords="150,150,2" href="http://www.example.com/1/2/3/area-href-link-2.html" alt="link 2">
@@ -92,11 +96,12 @@ SAMPLE_2
     urls.include?('area-href-link-1.html').should eq true
     urls.include?('http://www.example.com/1/2/3/area-href-link-2.html').should eq true
     urls.include?('/folder/area-href-link-3.html?a=1').should eq true
+    urls.count.should eq 3
   end
 end
 
 describe ContentUrls::HtmlParser do
-  it "should parse HTML Sample 3 and return 'body background' URL" do
+  it "should parse HTML Sample 3 and return 'body background' URL and no other URLs" do
 
 html_sample_3 =<<SAMPLE_3
 <html>
@@ -111,11 +116,12 @@ SAMPLE_3
 
     urls = ContentUrls::HtmlParser.urls(html_sample_3)
     urls.first.should eq '/images/background.png'
+    urls.count.should eq 1
   end
 end
 
 describe ContentUrls::HtmlParser do
-  it "should parse HTML Sample 4 and return 'embed src' URL" do
+  it "should parse HTML Sample 4 and return 'embed src' URL and no other URLs" do
 
 html_sample_4 =<<SAMPLE_4
 <html>
@@ -131,11 +137,12 @@ SAMPLE_4
 
     urls = ContentUrls::HtmlParser.urls(html_sample_4)
     urls.first.should eq 'sample.swf'
+    urls.count.should eq 1
   end
 end
 
 describe ContentUrls::HtmlParser do
-  it "should parse HTML Sample 5 and return 'img src' URL" do
+  it "should parse HTML Sample 5 and return 'img src' URL and no other URLs" do
 
 html_sample_5 =<<SAMPLE_5
 <html>
@@ -151,11 +158,12 @@ SAMPLE_5
 
     urls = ContentUrls::HtmlParser.urls(html_sample_5)
     urls.first.should eq 'sample.gif'
+    urls.count.should eq 1
   end
 end
 
 describe ContentUrls::HtmlParser do
-  it "should parse HTML Sample 6 and return 'link href' URL" do
+  it "should parse HTML Sample 6 and return 'link href' URL and no other URLs" do
 
 html_sample_6 =<<SAMPLE_6
 <html>
@@ -171,11 +179,12 @@ SAMPLE_6
 
     urls = ContentUrls::HtmlParser.urls(html_sample_6)
     urls.first.should eq '/index.php'
+    urls.count.should eq 1
   end
 end
 
 describe ContentUrls::HtmlParser do
-  it "should parse HTML Sample 7 and return 'object data' URL" do
+  it "should parse HTML Sample 7 and return 'object data' URL and no other URLs" do
 
 html_sample_7 =<<SAMPLE_7
 <html>
@@ -191,11 +200,12 @@ SAMPLE_7
 
     urls = ContentUrls::HtmlParser.urls(html_sample_7)
     urls.first.should eq '/stuff/example.swf'
+    urls.count.should eq 1
   end
 end
 
 describe ContentUrls::HtmlParser do
-  it "should parse HTML Sample 8 and return 'script src' URL" do
+  it "should parse HTML Sample 8 and return 'script src' URL and no other URLs" do
 
 html_sample_8 =<<SAMPLE_8
 <html>
@@ -211,11 +221,12 @@ SAMPLE_8
 
     urls = ContentUrls::HtmlParser.urls(html_sample_8)
     urls.first.should eq '../scripts/go.js'
+    urls.count.should eq 1
   end
 end
 
 describe ContentUrls::HtmlParser do
-  it "should parse HTML Sample 9 and return 'meta content' URL" do
+  it "should parse HTML Sample 9 and return 'meta content' URL and no other URLs" do
 
 html_sample_9 =<<SAMPLE_9
 <html>
@@ -231,11 +242,12 @@ SAMPLE_9
 
     urls = ContentUrls::HtmlParser.urls(html_sample_9)
     urls.first.should eq 'http://example.com/'
+    urls.count.should eq 1
   end
 end
 
 describe ContentUrls::HtmlParser do
-  it "should parse HTML Sample 10 and return URLs found within 'style' attributes" do
+  it "should parse HTML Sample 10 and return URLs found within 'style' attributes, and return no other URLs" do
 
 html_sample_10 =<<SAMPLE_10
 <html>
@@ -250,11 +262,12 @@ SAMPLE_10
 
     urls = ContentUrls::HtmlParser.urls(html_sample_10)
     urls.first.should eq 'background.jpg'
+    urls.count.should eq 1
   end
 end
 
 describe ContentUrls::HtmlParser do
-  it "should parse HTML Sample 11 and return URLs found within 'style' tags" do
+  it "should parse HTML Sample 11 and return URLs found within 'style' tags, and return no other URLs" do
 
 html_sample_11 =<<SAMPLE_11
 <html>
@@ -272,11 +285,12 @@ SAMPLE_11
 
     urls = ContentUrls::HtmlParser.urls(html_sample_11)
     urls.first.should eq '/image/background.jpg'
+    urls.count.should eq 1
   end
 end
 
 describe ContentUrls::HtmlParser do
-  it "should parse HTML Sample 12 and return URLs found within 'script' tags" do
+  it "should parse HTML Sample 12 and return URLs found within 'script' tags, and return no other URLs" do
 
 html_sample_12 =<<SAMPLE_12
 <html>
@@ -295,11 +309,12 @@ SAMPLE_12
 
     urls = ContentUrls::HtmlParser.urls(html_sample_12)
     urls.first.should eq 'http://www.sample.com/index.html'
+    urls.count.should eq 1
   end
 end
 
 describe ContentUrls::HtmlParser do
-  it "should parse HTML Sample 13 and return 'frame src' URL" do
+  it "should parse HTML Sample 13 and return 'frame src' URL and no other URLs" do
 
 html_sample_13 =<<SAMPLE_13
 <html>
@@ -315,11 +330,12 @@ SAMPLE_13
 
     urls = ContentUrls::HtmlParser.urls(html_sample_13)
     urls.first.should eq '/info.html'
+    urls.count.should eq 1
   end
 end
 
 describe ContentUrls::HtmlParser do
-  it "should parse the HTML and return the 'base' URL" do
+  it "should parse the HTML and return the 'base' URL and no other URLs" do
 
   html_base_sample =<<BASE_SAMPLE
 <html>
