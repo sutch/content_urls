@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "content_urls"
-  s.version = "0.1.5"
+  s.version = "0.1.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Dennis Sutch"]
-  s.date = "2013-07-13"
+  s.date = "2013-07-16"
   s.description = "Parses various file types (HTML, CSS, JavaScript, ...) for URLs and provides methods for iterating through URLs and changing URLs."
   s.email = "dennis@sutch.com"
   s.extra_rdoc_files = [
@@ -46,7 +46,7 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<nokogiri>, ["~> 1.5.10"])
-      s.add_development_dependency(%q<rspec>, ["~> 2.8.0"])
+      s.add_development_dependency(%q<rspec>, ["~> 2.14.1"])
       s.add_development_dependency(%q<yard>, ["~> 0.7"])
       s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_development_dependency(%q<bundler>, ["~> 1.3.5"])
@@ -54,7 +54,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rake>, ["~> 10.1.0"])
     else
       s.add_dependency(%q<nokogiri>, ["~> 1.5.10"])
-      s.add_dependency(%q<rspec>, ["~> 2.8.0"])
+      s.add_dependency(%q<rspec>, ["~> 2.14.1"])
       s.add_dependency(%q<yard>, ["~> 0.7"])
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_dependency(%q<bundler>, ["~> 1.3.5"])
@@ -63,7 +63,7 @@ Gem::Specification.new do |s|
     end
   else
     s.add_dependency(%q<nokogiri>, ["~> 1.5.10"])
-    s.add_dependency(%q<rspec>, ["~> 2.8.0"])
+    s.add_dependency(%q<rspec>, ["~> 2.14.1"])
     s.add_dependency(%q<yard>, ["~> 0.7"])
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
     s.add_dependency(%q<bundler>, ["~> 1.3.5"])
