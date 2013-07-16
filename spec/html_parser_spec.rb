@@ -335,12 +335,31 @@ SAMPLE_13
 end
 
 describe ContentUrls::HtmlParser do
+  it "should parse the HTML and return nil when no 'base' URL" do
+
+    html_missing_base_sample =<<MISSING_BASE_SAMPLE
+<html>
+<head>
+  <title>HTML no base Sample</title>
+</head>
+<body>
+  <h1>HTML no base Sample</h1>
+</body>
+</html>
+MISSING_BASE_SAMPLE
+
+    url = ContentUrls::HtmlParser.base(html_missing_base_sample)
+    url.should eq nil
+  end
+end
+
+describe ContentUrls::HtmlParser do
   it "should parse the HTML and return the 'base' URL and no other URLs" do
 
   html_base_sample =<<BASE_SAMPLE
 <html>
 <head>
-  <base href='/en/'
+  <base href='/en/'>
   <title>HTML base Sample</title>
 </head>
 <body>
