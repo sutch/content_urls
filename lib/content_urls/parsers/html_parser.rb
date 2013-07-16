@@ -62,8 +62,6 @@ class ContentUrls
       #  - should href URL be changed?
       #  - should relative URLs be modified using base?
       #  - how should rewritten relative URLs be handled?
-      base = doc.search('//head/base/@href')  # base URI for resolving relative URIs
-      base = nil if base && base.to_s.strip.empty?
 
       @@parser_definition.each do |type, definition|
         doc.search(definition[:xpath]).each do |obj|
