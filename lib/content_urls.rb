@@ -21,7 +21,14 @@ class ContentUrls
   #   end
   #   # => "Found URL: index.html"
   #
-  # @example Parse content obtained from a robot
+  # @example Parse HTML code for URLs, changing each to an absolute URL based on the address of the the original resource
+  #   content = '<html><a href="index.html">Home</a></html>'
+  #   ContentUrls.urls(content, 'text/html', content_url: 'http://www.example.com/sample.html').each do |url|
+  #     puts "Found URL: #{url}"
+  #   end
+  #   # => "Found URL: http://www.example.com/index.html"
+  #
+  #  # @example Parse content obtained from a robot
   #   response = Net::HTTP.get_response(URI('http://example.com/sample-1'))
   #   puts "URLs found at http://example.com/sample-1:"
   #   ContentUrls.urls(response.body, response.content_type).each do |url|
