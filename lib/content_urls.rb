@@ -9,6 +9,9 @@ class ContentUrls
   #
   # @param [String] content the content.
   # @param [String] type the media type of the content.
+  # @param [Hash] opts the options for manipulating returned URLs
+  # @option opts [String] :use_base_url (false) if base URL is found in content, this option indicates whether base URL will be used to change each relative URL to an absolute URL (note: base URL ignored if determined to be relative)
+  # @option opts [String] :content_url the URL from which content was retrieved; will be used to change each relative URL to an absolute URL (note: :use_base_url option takes precedence over :content_url option; content URL will ignored if determined to be relative)
   # @return [Array] the unique URLs found in the content.
   #
   # @example Parse HTML code for URLs
@@ -26,12 +29,48 @@ class ContentUrls
   #   end
   #   # => [a list of URLs found in the content located at http://example.com/sample-1]
   #
-  def self.urls(content, type)
+  def self.urls(content, type, options = {})
+    options = {
+        :use_base_url => false,
+        :content_url => nil,
+    }.merge(options)
     urls = []
     if (parser = get_parser(type))
-      parser.urls(content).each { |url| urls << url }
+      base = base_url(content, type) if options[:use_base_url]
+      base = '' if URI(base || '').relative?
+      if options[:content_url]
+        content_url = URI(options[:content_url]) rescue ''
+        content_url = '' if URI(content_url).relative?
+        base = URI.join(content_url, base)
+      end
+      if URI(base).relative?
+        parser.urls(content).each { |url| urls << url }
+      else
+        parser.urls(content).each { |url| urls << URI.join( base, url).to_s }
+      end
     end
     urls
+  end
+
+  # Returns base URL found in the content, if available.
+  #
+  # @param [String] content the content.
+  # @param [String] type the media type of the content.
+  # @return [String] the base URL found in the content.
+  #
+  # @example Parse HTML code for base URL
+  #   content = '<html><head><base href="/home/">'
+  #   puts "Found base URL: #{ContentUrls.base_url(content, 'text/html')}"
+  #   # => "Found base URL: /home/"
+  #
+  def self.base_url(content, type)
+    base = nil
+    if (parser = get_parser(type))
+      if (parser.respond_to?(:base))
+        base = parser.base(content)
+      end
+    end
+    base
   end
 
   # Rewrites each URL in the content by calling the supplied block with each URL.

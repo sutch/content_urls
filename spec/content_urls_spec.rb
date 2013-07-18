@@ -27,3 +27,57 @@ describe ContentUrls.register_parser('some_parser_class', %r{^(content/test)\b})
     ContentUrls.get_parser('content/test').should eq 'some_parser_class'
   end
 end
+
+describe ContentUrls do
+  it "should return relative URLs as absolute when requested" do
+
+    html_base_sample =<<BASE_SAMPLE
+<html>
+<head>
+  <base href='http://www.example.com/sample/'>
+  <title>HTML base Sample</title>
+</head>
+<body>
+  <h1>HTML base Sample</h1>
+  <a href='about.html'>about</a>
+</body>
+</html>
+BASE_SAMPLE
+
+    urls = ContentUrls.urls(html_base_sample, 'text/html', use_base_url: true)
+    urls[0].should eq 'http://www.example.com/sample/about.html'
+
+    urls = ContentUrls.urls(html_base_sample, 'text/html', content_url: 'https://www2.example.com/test/index.html')
+    urls[0].should eq 'https://www2.example.com/test/about.html'
+
+    urls = ContentUrls.urls(html_base_sample, 'text/html', use_base_url: true, content_url: 'https://www2.example.com/test/index.html')
+    urls[0].should eq 'http://www.example.com/sample/about.html'
+  end
+end
+
+describe ContentUrls do
+  it "should not change absolute URLs when requested to make absolute URLs from relative URLs" do
+
+    html_base_sample =<<BASE_SAMPLE
+<html>
+<head>
+  <base href='http://www2.example.com/sample/'>
+  <title>HTML base Sample</title>
+</head>
+<body>
+  <h1>HTML base Sample</h1>
+  <a href='http://www.example.com/about.html'>about</a>
+</body>
+</html>
+BASE_SAMPLE
+
+    urls = ContentUrls.urls(html_base_sample, 'text/html', use_base_url: true)
+    urls[0].should eq 'http://www.example.com/about.html'
+
+    urls = ContentUrls.urls(html_base_sample, 'text/html', content_url: 'https://www2.example.com/test/index.html')
+    urls[0].should eq 'http://www.example.com/about.html'
+
+    urls = ContentUrls.urls(html_base_sample, 'text/html', use_base_url: true, content_url: 'https://www2.example.com/test/index.html')
+    urls[0].should eq 'http://www.example.com/about.html'
+  end
+end
