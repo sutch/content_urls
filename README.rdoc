@@ -27,6 +27,8 @@ ContentUrls was developed to address two use cases:
   * url() notation
 * JavaScript content
   * URI module's REGEXP
+* Can convert relative URLs to absolute URLs by providing resource URL
+* Can convert relative URLs to absolute URLs when base URL found in HTML content
 
 == Examples
 === Find URLs in an HTML document
