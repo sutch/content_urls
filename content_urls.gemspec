@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "content_urls"
-  s.version = "0.1.6"
+  s.version = "0.1.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Dennis Sutch"]
-  s.date = "2013-07-16"
+  s.date = "2013-07-18"
   s.description = "Parses various file types (HTML, CSS, JavaScript, ...) for URLs and provides methods for iterating through URLs and changing URLs."
   s.email = "dennis@sutch.com"
   s.extra_rdoc_files = [
