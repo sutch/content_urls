@@ -21,13 +21,12 @@ class ContentUrls
       urls = []
       remaining = content
       while ! remaining.empty?
-        if @@regex_uri =~ remaining
-          match = $1
-          url = $7 || $14 || $23
+        if match = @@regex_uri.match(remaining)
+          url = match[:uri]
           #if @@regex_baduri =~ match  ## bad URL
           #  remaining = remaining[Regexp.last_match.begin(0)+1..-1]  # Use last_match from regex_uri test
           #else
-            remaining = Regexp.last_match.post_match
+            remaining = match.post_match
             urls << url
           #end
         else
@@ -54,7 +53,7 @@ class ContentUrls
       rewritten = ''
       while ! remaining.empty?
         if match = @@regex_uri.match(remaining)
-          url = match[7] || match[14] || match[23]
+          url = match[:uri]
           rewritten += match.pre_match
           remaining = match.post_match
           replacement = yield url
@@ -84,10 +83,10 @@ class ContentUrls
     @@escape = '(' + @@unicode + '|\\\\[^\n\r\f0-9a-f])'
 
     # {string1}:  \"([^\n\r\f\\"]|\\{nl}|{escape})*\"
-    @@string1 = '(\"(([^\n\r\f\\\\"]|\\\\' + @@nl + '|' + @@escape + ')*)\")'
+    @@string1 = '(\"(?<uri>([^\n\r\f\\\\"]|\\\\' + @@nl + '|' + @@escape + ')*)\")'
 
     # {string2}:    \'([^\n\r\f\\']|\\{nl}|{escape})*\'
-    @@string2 = '(\\\'(([^\n\r\f\\\\\']|\\\\' + @@nl + '|' + @@escape + ')*)\\\')'
+    @@string2 = '(\\\'(?<uri>([^\n\r\f\\\\\']|\\\\' + @@nl + '|' + @@escape + ')*)\\\')'
 
     # {string}:       {string1}|{string2}
     @@string = '(' + @@string1 + '|' + @@string2 + ')'
@@ -96,7 +95,7 @@ class ContentUrls
     @@nonascii = '([^\x0-\x237])'
 
     # {uri}:    url\({w}{string}{w}\)|url\({w}([!#$%&*-\[\]-~]|{nonascii}|{escape})*{w}\)
-    @@uri = '(((url\(' + @@w + @@string + @@w + '\))|(url\(' + @@w + '(([!#$%&*-\[\]-~]|' + @@nonascii + '|' + @@escape + ')*)' + @@w + '\))))'
+    @@uri = '(((url\(' + @@w + @@string + @@w + '\))|(url\(' + @@w + '(?<uri>([!#$%&*-\[\]-~]|' + @@nonascii + '|' + @@escape + ')*)' + @@w + '\))))'
 
     # {badstring1}:  \"([^\n\r\f\\"]|\\{nl}|{escape})*\\?
     @@badstring1 = '(\"([^\n\r\f\\\\"]|\\\\' + @@nl + '|' + @@escape + ')*\\\\?)'
