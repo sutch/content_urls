@@ -31,4 +31,20 @@ describe ContentUrls::CssParser do
     end
     output.should eq %Q{Found URL: /images/rainbows.jpg\n}
   end
+
+  it "should find and rewrite urls when css contains no spaces" do
+    output = ''
+    css = 'body{background:url(/images/rainbows.jpg)}'
+    css = ContentUrls::CssParser.rewrite_each_url(css) {|url| url.sub(/rainbows.jpg/, 'unicorns.jpg')}
+    output += "Rewritten: #{css}" + "\n"
+    output.should eq %Q{Rewritten: body{background:url(/images/unicorns.jpg)}\n}
+  end
+  it "should find urls when css contains no spaces" do
+    output = ''
+    css = 'body { background: url(/images/rainbows.jpg) }'
+    ContentUrls::CssParser.urls(css).each do |url|
+      output += "Found URL: #{url}" + "\n"
+    end
+    output.should eq %Q{Found URL: /images/rainbows.jpg\n}
+  end
 end
