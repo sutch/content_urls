@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
 gem "nokogiri", "~> 1.5.10"
+gem "css_parser", "~> 1.3.4"
 
 group :development do
   gem "rspec", "~> 2.14.1"

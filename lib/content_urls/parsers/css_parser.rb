@@ -1,3 +1,5 @@
+require 'css_parser'
+
 class ContentUrls
 
   # +CssParser+ finds and rewrites URLs in CSS content.
@@ -17,24 +19,12 @@ class ContentUrls
     #     puts "Found URL: #{url}"
     #   end
     #   # => "Found URL: /images/rainbows.jpg"
+    #
     def self.urls(content)
       urls = []
-      remaining = content
-      while ! remaining.empty?
-        if match = @@regex_uri.match(remaining)
-          url = match[:uri]
-          #if @@regex_baduri =~ match  ## bad URL
-          #  remaining = remaining[Regexp.last_match.begin(0)+1..-1]  # Use last_match from regex_uri test
-          #else
-            remaining = match.post_match
-            urls << url
-          #end
-        else
-          remaining = ''
-        end
-      end
+      rewrite_each_url(content) { |url| urls << url; url }
       urls.uniq!
-      urls        
+      urls
     end
 
     # Rewrites each URL in the CSS content by calling the supplied block with each URL.
@@ -48,22 +38,47 @@ class ContentUrls
     #   # => "Rewritten: body { background: url(/images/unicorns.jpg) }"
     #
     def self.rewrite_each_url(content, &block)
-      done = false
-      remaining = content
-      rewritten = ''
-      while ! remaining.empty?
-        if match = @@regex_uri.match(remaining)
-          url = match[:uri]
-          rewritten += match.pre_match
-          remaining = match.post_match
-          replacement = yield url
-          rewritten += (replacement.nil? ? match[0] : match[0].sub(url, replacement))
-        else
-          rewritten += remaining
-          remaining = ''
+      urls = {}
+      parser = ::CssParser::Parser.new
+      parser.load_string!(content)
+      parser.each_selector do |selector|
+        parser[selector].each do |element|
+          remaining = element
+          while !remaining.empty?
+            if match = @@regex_uri.match(remaining)
+              urls[match[:url]] = match[:uri]
+              remaining = match.post_match
+            else
+              remaining = ''
+            end
+          end
         end
       end
-      return rewritten
+      rewritten_content = [{:content => content, :is_rewritten => false}]
+      urls.each do |property_value, url|
+        rewritten_url = yield url
+        if rewritten_url != url
+          rewritten_property_value = property_value.dup
+          rewritten_property_value[url] = rewritten_url
+          i = 0
+          while i < rewritten_content.count
+            if !rewritten_content[i][:is_rewritten]
+              if match = /#{Regexp.escape(property_value)}/.match(rewritten_content[i][:content])
+                if match.pre_match.length > 0
+                  rewritten_content.insert(i, {:content => match.pre_match, :is_rewritten => false})
+                  i += 1
+                end
+                rewritten_content[i] = {:content => rewritten_property_value, :is_rewritten => true}
+                if match.post_match.length > 0
+                  rewritten_content.insert(i+1, {:content => match.post_match, :is_rewritten => false})
+                end
+              end
+            end
+            i += 1
+          end
+        end
+      end
+      rewritten_content.map { |c| c[:content]}.join
     end
 
     protected
@@ -95,7 +110,7 @@ class ContentUrls
     @@nonascii = '([^\x0-\x237])'
 
     # {uri}:    url\({w}{string}{w}\)|url\({w}([!#$%&*-\[\]-~]|{nonascii}|{escape})*{w}\)
-    @@uri = '(((url\(' + @@w + @@string + @@w + '\))|(url\(' + @@w + '(?<uri>([!#$%&*-\[\]-~]|' + @@nonascii + '|' + @@escape + ')*)' + @@w + '\))))'
+    @@uri = '(?<url>((url\(' + @@w + @@string + @@w + '\))|(url\(' + @@w + '(?<uri>([!#$%&*-\[\]-~]|' + @@nonascii + '|' + @@escape + ')*)' + @@w + '\))))'
 
     # {badstring1}:  \"([^\n\r\f\\"]|\\{nl}|{escape})*\\?
     @@badstring1 = '(\"([^\n\r\f\\\\"]|\\\\' + @@nl + '|' + @@escape + ')*\\\\?)'
