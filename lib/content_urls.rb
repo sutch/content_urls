@@ -146,6 +146,7 @@ class ContentUrls
 
   require 'content_urls/parsers/css_parser'
   register_parser ContentUrls::CssParser, %r{^(text/css)\b}
+  register_parser ContentUrls::StyleParser, %r{^(html-inline-style)\b}
 
   require 'content_urls/parsers/java_script_parser'
   register_parser ContentUrls::JavaScriptParser, %r{^(application/x-javascript)\b}, %r{^(application/javascript)\b}, %r{^(text/javascript)\b}

@@ -152,7 +152,7 @@ class ContentUrls
       style_attribute: {
         xpath: "//*[@style]",
         attribute: 'style',
-        parser: 'text/css'
+        parser: 'html-inline-style'
       },
       style_tag: {
         xpath: "//style",
