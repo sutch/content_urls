@@ -1,4 +1,5 @@
 require 'uri'
+require 'rkelly'
 
 class ContentUrls
 
@@ -37,26 +38,25 @@ class ContentUrls
     #   # => "Rewritten: var link="HTTP://EXAMPLE.COM/""
     #
     def self.rewrite_each_url(content, &block)
-      done = false
-      remaining = content
-      rewritten = ''
-      while ! remaining.empty?
-        if match = URI.regexp.match(remaining)
-          url = match.to_s
-          rewritten += match.pre_match
-          replacement = url.nil? ? nil : (yield url)
-          if replacement.nil? or replacement == url  # no change in URL
-            rewritten += url
-          else
-            rewritten += replacement
+      rewritten_content = content.dup
+      rewrite_urls = {}
+      parser = RKelly::Parser.new
+      ast = parser.parse(content)
+      ast.each do |node|
+        if node.kind_of? RKelly::Nodes::StringNode
+          if match = URI.regexp.match(node.value)
+            url = match.to_s
+            rewritten_url = yield url
+            rewrite_urls[url] = rewritten_url if url != rewritten_url
           end
-          remaining = match.post_match
-        else
-          rewritten += remaining
-          remaining = ''
         end
       end
-      return rewritten
+      if rewrite_urls.count > 0
+        rewrite_urls.each do |url, rewritten_url|
+          rewritten_content[url] = rewritten_url
+        end
+      end
+      rewritten_content
     end
 
   end
