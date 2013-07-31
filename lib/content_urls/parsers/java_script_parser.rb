@@ -22,7 +22,8 @@ class ContentUrls
     #   # => "Found URL: http://example.com/"
     def self.urls(content)
       urls = []
-      URI.extract(content).each { |u| urls << u }
+      return urls if content.nil? || content.length == 0
+      rewrite_each_url(content) { |url| urls << url; url }
       urls.uniq!
       urls
     end
@@ -42,9 +43,14 @@ class ContentUrls
       rewrite_urls = {}
       parser = RKelly::Parser.new
       ast = parser.parse(content)
+      return content if ast.nil?
       ast.each do |node|
         if node.kind_of? RKelly::Nodes::StringNode
-          if match = URI.regexp.match(node.value)
+          value = node.value
+          if match = /^'(.*)'$/.match(value)
+            value = match[1]  # remove single quotes
+          end
+          if match = URI.regexp.match(value)
             url = match.to_s
             rewritten_url = yield url
             rewrite_urls[url] = rewritten_url if url != rewritten_url

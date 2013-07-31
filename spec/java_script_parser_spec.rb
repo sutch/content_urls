@@ -30,3 +30,21 @@ describe ContentUrls::JavaScriptParser do
     output.should eq %Q{Found URL: http://example.com/\n}
   end
 end
+
+describe ContentUrls::JavaScriptParser do
+  it "should correctly handle single quotes in rewrite_each_url method" do
+    output = ''
+    javascript = "var link='http://example.com/';"
+    javascript = ContentUrls::JavaScriptParser.rewrite_each_url(javascript) {|url| url.upcase}
+    output += "Rewritten: #{javascript}" + "\n"
+    output.should eq %Q{Rewritten: var link='HTTP://EXAMPLE.COM/';\n}
+  end
+  it "should correctly handle single quotes in urls method" do
+    output = ''
+    javascript = "var link='http://example.com/';"
+    ContentUrls::JavaScriptParser.urls(javascript).each do |url|
+      output += "Found URL: #{url}" + "\n"
+    end
+    output.should eq %Q{Found URL: http://example.com/\n}
+  end
+end
