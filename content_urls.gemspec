@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "content_urls"
-  s.version = "0.1.7"
+  s.version = "0.1.8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Dennis Sutch"]
-  s.date = "2013-07-30"
+  s.date = "2013-08-01"
   s.description = "Parses various file types (HTML, CSS, JavaScript, ...) for URLs and provides methods for iterating through URLs and changing URLs."
   s.email = "dennis@sutch.com"
   s.extra_rdoc_files = [
@@ -47,7 +47,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<nokogiri>, ["~> 1.5.10"])
       s.add_runtime_dependency(%q<css_parser>, ["~> 1.3.4"])
-      s.add_runtime_dependency(%q<rkelly>, [">= 0"])
+      s.add_runtime_dependency(%q<rkelly>, ["~> 1.0.7"])
       s.add_development_dependency(%q<rspec>, ["~> 2.14.1"])
       s.add_development_dependency(%q<yard>, ["~> 0.7"])
       s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
@@ -57,7 +57,7 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<nokogiri>, ["~> 1.5.10"])
       s.add_dependency(%q<css_parser>, ["~> 1.3.4"])
-      s.add_dependency(%q<rkelly>, [">= 0"])
+      s.add_dependency(%q<rkelly>, ["~> 1.0.7"])
       s.add_dependency(%q<rspec>, ["~> 2.14.1"])
       s.add_dependency(%q<yard>, ["~> 0.7"])
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
@@ -68,7 +68,7 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<nokogiri>, ["~> 1.5.10"])
     s.add_dependency(%q<css_parser>, ["~> 1.3.4"])
-    s.add_dependency(%q<rkelly>, [">= 0"])
+    s.add_dependency(%q<rkelly>, ["~> 1.0.7"])
     s.add_dependency(%q<rspec>, ["~> 2.14.1"])
     s.add_dependency(%q<yard>, ["~> 0.7"])
     s.add_dependency(%q<rdoc>, ["~> 3.12"])

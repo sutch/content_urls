@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem "nokogiri", "~> 1.5.10"
 gem "css_parser", "~> 1.3.4"
-gem "rkelly"
+gem "rkelly", "~> 1.0.7"
 
 group :development do
   gem "rspec", "~> 2.14.1"

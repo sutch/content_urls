@@ -43,13 +43,14 @@ Provide the HTML content, the content type, and a block to rewrite each URL's ex
 
 == Requirements
 * nokogiri
+* css_parser
+* rkelly
 
 == Development
 To test and develop this gem, additional requirements are:
 * bundler
 * jeweler
 * rake
-* rcov
 * rdoc
 * rspec
 * yard
