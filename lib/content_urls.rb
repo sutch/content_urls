@@ -111,7 +111,7 @@ class ContentUrls
   def self.to_absolute(url, base_url)
     return nil if url.nil?
 
-    url = URI.encode(URI.decode(url.to_s.gsub(/#[a-zA-Z0-9_-]*$/,'')))  # remove anchor
+    url = URI.encode(URI.decode(url.to_s.gsub(/#[a-zA-Z0-9\s_-]*$/,'')))  # remove anchor
     absolute = URI(base_url).merge(url)
     absolute.path = '/' if absolute.path.empty?
     absolute.to_s
