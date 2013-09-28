@@ -81,3 +81,26 @@ BASE_SAMPLE
     urls[0].should eq 'http://www.example.com/about.html'
   end
 end
+
+describe ContentUrls do
+  it "should not change absolute URLs when requested to make absolute URLs from relative URLs" do
+
+    html_sample =<<HTML_SAMPLE
+<html>
+<head>
+  <title>HTML Sample</title>
+</head>
+<body>
+  <h1>HTML Sample</h1>
+  <a href='http://www.example.com/about.html'>about</a>
+</body>
+</html>
+HTML_SAMPLE
+
+    rewritten = ContentUrls.rewrite_each_url(html_sample, 'text/html') {|u|
+      'http://example.org/about.php'
+    }
+    urls = ContentUrls.urls(rewritten, 'text/html')
+    urls[0].should eq 'http://example.org/about.php'
+  end
+end

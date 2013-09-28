@@ -94,7 +94,7 @@ class ContentUrls
   #
   def self.rewrite_each_url(content, type, &block)
     if (parser = get_parser(type))
-      parser.rewrite_each_url(content) do |url|
+      content = parser.rewrite_each_url(content) do |url|
         replacement = yield url
         (replacement.nil? ? url : replacement)
       end
