@@ -59,7 +59,7 @@ class ContentUrls
       end
       if rewrite_urls.count > 0
         rewrite_urls.each do |url, rewritten_url|
-          rewritten_content[url] = rewritten_url
+          rewritten_content[url] = rewritten_url.to_s
         end
       end
       rewritten_content
